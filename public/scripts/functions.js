@@ -1,7 +1,7 @@
 function submitComment(commentControl) {
     var comments = document.getElementsByName(commentControl)[0].value;
-    var subscriptionKey = "TEXT_ANALYTICS_API_KEY";
-    var url = "TEXT_ANALYTICS_ENDPOINT/sentiment";
+    var subscriptionKey = "f52ece6260d5460ba063601d2a5cce39";
+    var url = "https://eastus.api.cognitive.microsoft.com/text/analytics/v2.1/sentiment";
 
     var payload = '{ "documents": [ { "language": "en-US", "id": "1", "text": "' + comments + '" }]}';
 
@@ -17,12 +17,13 @@ function submitComment(commentControl) {
     }).done(function (data) {
 
         var sentimentRating = Math.round((data.documents[0].score * 100) / 25) + 1;
-
+        var decimalRating = ((data.documents[0].score * 100) / 25 + 1).toFixed(2);
         var currentItemId = JSON.parse(localStorage.getItem('currentItemId'));
 
-        window.location.href = '/comments?classId=' + currentItemId + '&rating=' + sentimentRating + '&comments=' + comments;
+        window.location.href = '/comments?classId=' + currentItemId + '&rating=' + sentimentRating + '&actualRating=' + decimalRating + '&comments=' + comments;
 
     }).fail(function (xhr, status, err) {
+        console.log("error");
         alert(err);
     });
 }

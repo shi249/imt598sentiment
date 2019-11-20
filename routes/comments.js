@@ -6,16 +6,17 @@ exports.comments = function (req, res) {
 
   var classId = req.query.classId;
   var comments = req.query.comments;
-
+  console.log(req.query);
   if (comments != null) {
  
     var rating = req.query.rating;
+    var actualRating = req.query.actualRating;
     
     if (rating == 0) rating = 1;
 
     global.ratings[classId].ratingCount++;
     global.ratings[classId].ratingTotal = global.ratings[classId].ratingTotal + Math.round(rating);
-    var comment = { classId: classId, rating: rating, comments: comments, createdDate: new Date().getDate() };
+    var comment = { classId: classId, rating: rating, actualRating: actualRating, comments: comments, createdDate: new Date().getDate() };
     global.comments.push(comment);
 
     var classComments = global.ratings.filter(function (value) { return value.classId == classId; })
@@ -30,7 +31,7 @@ exports.comments = function (req, res) {
   var classComments = global.comments.filter(function (value) { return value.classId == classId; })
 
   var averageRating = Math.round(global.ratings[classId].ratingTotal / global.ratings[classId].ratingCount);
-
+  //var decimalRating = (global.ratings[classId].ratingTotal / global.ratings[classId].ratingCount).toFixed(2);
   if (isNaN(averageRating)) averageRating = 0;
 
   classComments.sort(function (a, b) {
@@ -40,7 +41,7 @@ exports.comments = function (req, res) {
 
   classComments.reverse();
 
-  res.render('comments', { title: 'Classrates', classRating: averageRating,  classTitle: classTitles[classId], classComments: classComments });
+  res.render('comments', { title: 'Classrates', classRating: averageRating, classTitle: classTitles[classId], classComments: classComments });
 };
 
 
